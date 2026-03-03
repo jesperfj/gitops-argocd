@@ -1,0 +1,33 @@
+alloy:
+  alloy:
+    configMap:
+      content: |
+        // Discover Kubernetes pods and collect logs
+        discovery.kubernetes "pods" {
+          role = "pod"
+        }
+
+        discovery.relabel "pods" {
+          targets = discovery.kubernetes.pods.targets
+          rule {
+            source_labels = ["__meta_kubernetes_namespace"]
+            target_label  = "namespace"
+          }
+          rule {
+            source_labels = ["__meta_kubernetes_pod_name"]
+            target_label  = "pod"
+          }
+        }
+
+        // Collect logs from discovered pods
+        loki.source.kubernetes "pods" {
+          targets    = discovery.relabel.pods.output
+          forward_to = [loki.write.default.receiver]
+        }
+
+        loki.write "default" {
+          endpoint {
+            // Configure your Loki endpoint
+            url = "http://loki-gateway.loki.svc.cluster.local/loki/api/v1/push"
+          }
+        }

@@ -1,0 +1,3 @@
+# Helm dependency charts (built by Argo CD automatically)
+platform/*/charts/
+platform/*/Chart.lock

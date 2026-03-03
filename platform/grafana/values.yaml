@@ -1,0 +1,13 @@
+grafana:
+  adminPassword: admin
+  persistence:
+    enabled: false
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Loki
+          type: loki
+          url: http://loki-gateway.loki.svc.cluster.local
+          access: proxy
+          isDefault: true
